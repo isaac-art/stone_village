@@ -58,6 +58,6 @@ def main(md):
 if __name__ == "__main__":
     # take argument of markdown file
     parser = argparse.ArgumentParser()
-    parser.add_argument("md", help="markdown file to be converted")
+    parser.add_argument("md", help="markdown file to be converted", default="+")
     args = parser.parse_args()
     main(args.md)

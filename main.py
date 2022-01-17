@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 import markdown
 import argparse
 from os import listdir, remove
@@ -41,7 +41,21 @@ def write_post(md):
         f.write(updated) 
     # add link to post to index.html
     update_index(md)
-    
+
+def make_empty_md(when, name):
+    if when == "today":
+        d = date.today()
+    elif when == "yesterday":
+        d = date.today() - timedelta(days=1)
+    elif when == "tomorrow":
+        d = date.today() + timedelta(days=1)
+    else:
+        d = datetime.strptime(when, "%Y%m%d").date()
+    text = f'--\n### {d.strftime("%Y-%m-%d")} \n# {name.lower()}\n'
+    with open(f'mds/{d.strftime("%Y_%m_%d")}_{name}.md', 'w') as f:
+        f.write(text)
+    return
+  
 def main(md):
     if md == '+':
         for md in listdir_nohidden('mds'):
@@ -58,6 +72,13 @@ def main(md):
 if __name__ == "__main__":
     # take argument of markdown file
     parser = argparse.ArgumentParser()
-    parser.add_argument("md", help="markdown file to be converted", default="+")
+    parser.add_argument("--md", default="+", help="markdown file to be converted", required=False)
+    parser.add_argument("--make", help="create an empty markdown file for the given date", required=False)
+    parser.add_argument("--name", help="use this name for the new markdown file made by --make", required=False)
     args = parser.parse_args()
+    # if --make is set 
+    if args.make:
+        if args.name:
+            make_empty_md(args.make, args.name)
+            exit()
     main(args.md)

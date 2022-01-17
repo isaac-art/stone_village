@@ -4,11 +4,11 @@
 
 py-leximited is a python package for lexicographically delimited encoding and decoding.
 
-It was created by Dave Ackley and is described [here](https://github.com/elenasa/ULAM/wiki/Appendix-D:-Leximited-Format).
+The Leximited Format was created by Dave Ackley, and is described [here](https://github.com/elenasa/ULAM/wiki/Appendix-D:-Leximited-Format).
 
 It is useful when working with lists of information that you want to keep in a specific order across different programs/operating systems/etc.
 
-
+It also adds the useful feature of giving the length of the string as the first values of the string.
 
 ---
 

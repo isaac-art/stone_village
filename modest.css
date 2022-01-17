@@ -215,5 +215,6 @@ blockquote {
 
 pre,
 code {
-  background-color: #fafafa;
+  /* background-color: #fafafa; */
+  background-color: aliceblue;
 }

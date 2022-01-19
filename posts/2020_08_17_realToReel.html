@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>2020_08_17_realToReel</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../modest.css"/>
+    <link rel="stylesheet" href="../style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<a href="../index.html">back</a>
+<p>--</p>
+<h3>2020-08-17</h3>
+<h1>realtoreel</h1>
+<p>I was asked to make a controller to add automatic rewinding to an old Revox A77 reel to reel tape player. </p>
+<p><img alt="Revox A77" src="../content/revoxa77.jpeg" title="revox a77" /></p>
+<p>These are great machines to work with as they had din ports for wired controllers which were used for triggering recording/playback in studios. I found the wiring for one of these controllers and used it as the base for my circuit. </p>
+<p><img alt="Remote Wiring Diagram" src="https://raw.githubusercontent.com/isaac-art/realToReel/master/research/remote_wiring.png" title="remote wiring diagram" /></p>
+<p>For my controller I only need the play, stop, and rewind switches. I'd decided on using an esp8266 which I could program with micropython to toggle some relays on and off, and added in the required capacitors and resistors from the original control circuit.</p>
+<p>The idea was to rewind the tape when it reached the end of the track, then play again. So we could turn on the player and it would loop all day. The tape player had an interesting stop mechanism, a small light would shine against a photodiode with the tape running between the two, blocking the light. once the tape reached the end the light would hit the sensor and trigger the stop button. So i used this same mechanism, but instead of running the sensor to the stop button i directed it to the esp8266, then instead of letting the tape leave the spool entirely i replaced the start and end with transparent leader tape, which the light would shine thought. This way i had a signal to my controller that we had reached the end/start of the tape and that it was time to rewind/play.</p>
+<p><img alt="Breadboard" src="../content/revoxbreadboard.jpeg" title="revox breadboard" /></p>
+<p>After testing out the circuit worked on a breadboard I had a go at making a pcb, i hadnt done much pcb work before, there a things id definitely imporve in future such as trace widths (I just used Eagle defaults). The board had a simple task, give me somewhere to mount the large capacitor and the resistors and diodes for the control circuit, a place to mount the esp8266, and a bunch of screw terminals to connect to the relay board. I also added space for a <a href="https://smile.amazon.co.uk/gp/product/B073QH1XT8/ref=ppx_yo_dt_b_asin_title_o06_s00?ie=UTF8&amp;psc=1">step down power supply module</a> so i could tap the mains in for the tape player and use that for powering the esp8266.</p>
+<p><img alt="pcb" src="../content/revoxpcb.jpeg" title="revox pcb" /></p>
+<p>I had it etched by <a href="https://aisler.net/">Aisler</a>. I had 3 players to control, so assembled the boards. </p>
+<p><img alt="boards" src="../content/revoxboards.jpeg" title="revox boards" /></p>
+<p><img alt="inside" src="../content/revoxa77inside.jpeg" title="revox insides" /></p>
+<p>These are amazing machines to take apart, everything slots together nicely, parts easy to desolder and replace, and sturdy metal framing. </p>
+<p>I spliced into the tape player circuit, routing the relays onto the cables for the din-controller port. </p>
+<p><img alt="splice" src="../content/revoxsplice.jpeg" title="revox splicing" /></p>
+<p>Here is a video of the player <a href="https://youtu.be/6oJ70X_Sa90">youtube</a>.</p>
+<p>And the repository with pcb and micropython scripts. <a href="https://github.com/isaac-art/realToReel">github</a></p>
+<p><img alt="revox workbench" src="../content/revoxworkbench.jpeg" title="revox workbench" /></p>
+</body>
+</html>    

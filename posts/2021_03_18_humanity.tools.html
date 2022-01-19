@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>2021_03_18_humanity.tools</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="../modest.css"/>
+    <link rel="stylesheet" href="../style.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<a href="../index.html">back</a>
+<p>--</p>
+<h3>2021-03-18</h3>
+<h1>humanity.tools</h1>
+<p><a href="https://proofofhumanity.id/">proof of humanity</a> is an interesting attempt to create a sybil resistant list of crypto signatures, so that other contracts can use it to prevent spam and other attacks in their systems.</p>
+<p>It is also being used for a realtime UBI experiment, streaming tokens to all the registered humans. </p>
+<p>I wrote a few sites to play with this data, and experiment with burning UBI tokens for governance and other things. They are mostly collected on <a href="https://humanity.tools/">humanity.tools</a> website.</p>
+<p>First I made a <a href="https://graph.humanity.tools/">Graph</a> showing the connections of who has vouched for who on the network. </p>
+<p><img alt="graph" src="../content/pohgraph.png" title="pohgraph" /></p>
+<p>I then made a website which uses face encodings (positions of eyes/nose/mouth/etc) to aid in detecting duplicate entries in the registry. You give the address of the profile you are checking and it searches for similar encodings. It doesn't scale well and has a lot of false positives, but I heard that it was useful from a few people.</p>
+<p><img alt="faces" src="../content/faces.png" title="faces" /></p>
+<p>I then made a contract that mints generative nfts of svg clouds, but to mint them yuo have to mint an increasing number of UBI tokens. This both limits the supply to the available UBI supply, and adds a curve where the more popular it gets the more expensive it gets too. </p>
+<p><img alt="clouds" src="../content/clouds.png" title="clouds" /></p>
+<p>Now we have some artworks, we need somewhere to show them. Enter <a href="https://universal.basic.gallery/">Universal Basic Gallery</a>. A gallery contract, you burn UBI to choose what token is on display. By reading the contract transactions we can see the history of works that have been displayed. </p>
+<p><img alt="ubg" src="../content/ubg.png" title="ubg" /></p>
+<hr />
+<p><img alt="eth" src="../content/eth.png" title="eth" /></p>
+</body>
+</html>    

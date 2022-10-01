@@ -1,0 +1,61 @@
+<html>
+
+
+<style>
+body {
+  margin: 0;
+  padding: 0;
+    background-color: #000;
+    color: #fff;
+    height: 100vh;
+    width: 100vw;
+}
+.scrolling-image-container {
+  overflow: hidden;
+}
+
+.scrolling-image {
+  background: url("hair4.gif") repeat;
+  height: 7680px;
+  width: 7680px;
+  animation: slide 6s linear infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translate(0,0);
+  }
+  100% {
+    transform: translate(-512px, -512px); /* The image width */
+  }
+}
+</style>
+
+<body>
+<div class="scrolling-image-container">
+  <div class="scrolling-image"></div>
+</div>
+
+</body>
+<script>
+
+// pick random number between 0 and 100
+// i = 0
+
+// // random .png is image
+// var image = "images/" + i + ".png";
+
+// document.querySelector('.scrolling-image').style.backgroundImage = `url(${image})`
+
+// // every three seconds update the image
+
+// setInterval(function() {
+//   i += 1
+//   if(i > 18){i = 0}
+//   var image = "images/" + i + ".png";
+//   document.querySelector('.scrolling-image').style.backgroundImage = `url(${image})`
+// }, 6000);
+
+</script>
+
+</html>

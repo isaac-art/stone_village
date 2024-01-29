@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>DEMO</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+    canvas{
+        display: none;
+    }
+</style>
+<body>
+<canvas id="chartCanvas" style="display: block;max-width: 800px; max-height: 300px;"></canvas>
+<div id="status"></div>
+<div id="results"></div>
+</body>
+
+<script type="module">
+import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.1';
+
+env.allowLocalModels = false;
+
+const captureInterval = 100; 
+const video = document.createElement('video');
+// video.style.display = 'hide';
+document.body.appendChild(video);
+
+const canvas = document.createElement('canvas');
+document.body.appendChild(canvas);
+canvas.style.display = 'none';
+const ctx = canvas.getContext('2d');
+
+const status = document.getElementById('status');
+const results = document.getElementById('results');
+
+const classes = [
+    'happy', 'drinking', 'standing', 'sitting', 'talking', 'clapping'
+];
+const chartCanvas = document.getElementById('chartCanvas');
+let chart;
+let chartData = {
+    labels: [],
+    datasets: classes.map(c => ({
+        label: c,
+        data: [],
+        fill: false,
+        borderColor: getRandomColor(), // Function to generate a random color
+        tension: 0.1
+    }))
+};
+
+results.textContent = classes.map(c => `${c}: 0`).join(', ');
+
+// LOAD PIPELINE
+status.textContent = 'Loading model...';
+const pipe = await pipeline('zero-shot-image-classification');
+status.textContent = 'Ready';
+// FINISHED LOADING
+
+async function detect(){
+    let img = await canvasToImage(canvas);
+    status.textContent = 'Analysing...';
+    const out = await pipe(img.src, classes);
+
+    results.textContent = out.map(x => `${x.label}: ${x.score.toFixed(3)}`).join(', ');
+    // add up all the scores
+    let total_amount = 0;
+    out.forEach(outcome => {
+        total_amount += outcome.score;
+    });
+    results.textContent += ` - Total: ${total_amount.toFixed(3)}`;
+    // UPDATE CHART
+    if (chartData.labels.length >= 50) {
+        chartData.labels.shift();
+        chartData.datasets.forEach(dataset => dataset.data.shift());
+    }
+    chartData.labels.push(new Date().toLocaleTimeString());
+    out.forEach(outcome => {
+        const dataset = chartData.datasets.find(d => d.label === outcome.label);
+        if (dataset) {
+            dataset.data.push(outcome.score);
+        }
+    });
+    chart.update();
+    status.textContent = 'Ready';
+
+    setTimeout(detect, captureInterval);
+}
+
+function drawToCanvas() {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(drawToCanvas);
+}
+
+function canvasToImage(canvas) {
+    return new Promise(resolve => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.src = canvas.toDataURL();
+    });
+}
+
+function initializeChart() {
+    chart = new Chart(chartCanvas, {
+        type: 'line',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
+// ----------------- BEGIN -----------------
+initializeChart();
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+    video.play();
+    drawToCanvas();
+    detect();
+})
+.catch(err => {
+    console.error("Error accessing webcam:", err);
+});
+
+</script>
+
+
+</html>

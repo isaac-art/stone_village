@@ -48,6 +48,14 @@ let chartData = {
     }))
 };
 
+let chartOptions = {
+  scales: {
+    y: {
+      min: 0,
+      max: 1,
+    }
+  }
+};
 results.textContent = classes.map(c => `${c}: 0`).join(', ');
 
 // LOAD PIPELINE
@@ -60,6 +68,7 @@ async function detect(){
     let img = await canvasToImage(canvas);
     status.textContent = 'Analysing...';
     const out = await pipe(img.src, classes);
+    console.log(out)
 
     results.textContent = out.map(x => `${x.label}: ${x.score.toFixed(3)}`).join(', ');
     // add up all the scores
@@ -107,13 +116,7 @@ function initializeChart() {
     chart = new Chart(chartCanvas, {
         type: 'line',
         data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
+        options: chartOptions
     });
 }
 

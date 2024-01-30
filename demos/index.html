@@ -16,6 +16,7 @@
 
 <script type="module">
 import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.1';
+import { EventCounter, Timer } from '/classes.js';
 
 env.allowLocalModels = false;
 
@@ -33,8 +34,22 @@ const status = document.getElementById('status');
 const results = document.getElementById('results');
 
 const classes = [
-    'happy', 'drinking', 'standing', 'sitting', 'talking', 'clapping'
+    'thumbs up', 'smiling', 'laughing', 
+    'drinking', 'sitting', 'standing', 
+    'yawning', 'leaning in'
 ];
+
+const queries = [
+    new EventCounter('thumbs up', 0.5, 200, 3000),
+    new Timer('smiling', 0.5),
+    new Timer('laughing', 0.5),
+    new EventCounter('drinking', 0.5, 200, 3000),
+    new Timer('sitting', 0.3),
+    new Timer('standing', 0.3),
+    new EventCounter('yawning', 0.3, 200, 3000),
+    new Timer('leaning in', 0.2),
+]
+
 const chartCanvas = document.getElementById('chartCanvas');
 let chart;
 let chartData = {
@@ -68,15 +83,25 @@ async function detect(){
     let img = await canvasToImage(canvas);
     status.textContent = 'Analysing...';
     const out = await pipe(img.src, classes);
-    console.log(out)
+    // console.log(out)
+    // results.textContent = out.map(x => `${x.label}: ${x.score.toFixed(3)}`).join(', ');
+   
+    const updatedResults = queries.map(query => {
+        if (query instanceof EventCounter) {
+            return `${query.queryString}: Events - ${query.events.length}`;
+        } else if (query instanceof Timer) {
+            return `${query.queryString}: Time - ${query.getElapsedTime()}ms`;
+        }
+    }).join(', ');
 
-    results.textContent = out.map(x => `${x.label}: ${x.score.toFixed(3)}`).join(', ');
-    // add up all the scores
-    let total_amount = 0;
-    out.forEach(outcome => {
-        total_amount += outcome.score;
+    results.textContent = updatedResults;
+    queries.forEach(query => {
+        const outcome = out.find(o => o.label === query.queryString);
+        if (outcome) {
+            query.update({ score: outcome.score });
+        }
     });
-    results.textContent += ` - Total: ${total_amount.toFixed(3)}`;
+    
     // UPDATE CHART
     if (chartData.labels.length >= 50) {
         chartData.labels.shift();

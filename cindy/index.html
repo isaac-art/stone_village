@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cindy's Adventure</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #levelText, #dialog {
+            background-color: black;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            top: 4%;
+            text-shadow: 10px 10px 10px black; /* Black outline for readability */
+        }
+
+        .complete{
+            top: 0% !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #dialog {
+            top: 80%;
+            font-size: 20px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script> <!-- Include p5.sound -->
+</head>
+<body>
+    <div id="levelText">Cindy is looking for Joe at home. Where could he be?</div>
+    <div id="dialog"></div>
+
+    <script>
+        let level = 0;
+        let backgrounds = [];
+        let levelAudio = [];
+        let texts = [
+            "Cindy is looking for Joe at home. Where could he be?",
+            "Cindy wonders: Is Joe at the beach?",
+            "Cindy heard Joe might like Europe. Could he be there?",
+            "Cindy wonders: Maybe Joe is in space?",
+            "Cindy finds Joe relaxing at the hot spring.",
+            "Cindy and Joe finally go home together to Beijing."
+        ];
+        let triggers = [
+            ["Paw prints near the window", "A knocked over plant", "The window is open", "A familiar scent", "Joe's favourite blanket"],
+            ["Paw prints in the sand", "Joe doesn’t like the big waves", "Is he sipping a piña colada?", "Footprints lead toward the water", "A tail in the distance"],
+            ["A cat statue in a café", "A warm bakery scent", "Did Joe sneak into the museum?", "Could that be Joe’s shadow?", "A whisker in the breeze"],
+            ["A constellation looks like him", "A floating paw print", "A meow in the stars", "Joe among the asteroids", "A shadow of Joe on the moon"],
+            ["A nice spot to relax", "The water is just right", "Joe seems happy here", "The steam looks like Joe", "A peaceful moment by the water"],
+            ["A bird on the rooftop", "A market full of smells", "A perfect spot for a nap", "Joe loves the city", "Chasing a shadow in the alleys"]
+        ];
+
+        let character, joe, pawPrint;
+        let characterX = 100, characterY = 100;
+        let joeX, joeY;  // Joe's position
+        let triggerPoints = [];
+        let triggerDialog = "";
+        let currentAudio;
+        let audioStarted = false;  // To check if the audio has started
+        let levelComplete = false;
+        let startTime, endTime;
+        let pawPrintTimer = 700;  // Time before paw print moves to new location (5 seconds)
+
+        function preload() {
+            // Load background images and audio files
+            backgrounds[0] = loadImage('assets/images/home.webp');
+            backgrounds[1] = loadImage('assets/images/beach.webp');
+            backgrounds[2] = loadImage('assets/images/europe.webp');
+            backgrounds[3] = loadImage('assets/images/space.webp');
+            backgrounds[4] = loadImage('assets/images/hotspring.webp');
+            backgrounds[5] = loadImage('assets/images/beijing.webp');
+
+            // Load character sprites and paw print
+            character = loadImage('assets/images/character.png');
+            joe = loadImage('assets/images/joe.png');
+            pawPrint = loadImage('assets/images/paw.png');  // Paw print image for clues
+
+            // Load audio files for each level
+            levelAudio[0] = loadSound('assets/audio/home.mp3');
+            levelAudio[1] = loadSound('assets/audio/beach.mp3');
+            levelAudio[2] = loadSound('assets/audio/europe.mp3');
+            levelAudio[3] = loadSound('assets/audio/space.mp3');
+            levelAudio[4] = loadSound('assets/audio/hotspring.mp3');
+            levelAudio[5] = loadSound('assets/audio/beijing.mp3');
+        }
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            startTime = millis();  // Start timer
+            displayLevel();
+            setInterval(movePawPrints, pawPrintTimer);  // Set interval for moving paw prints
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+
+        function displayLevel() {
+            levelComplete = false;
+            // Set the background image and reset character position
+            characterX = 100;
+            characterY = 100;
+            generateTriggerPoints();
+
+            // Reset Joe's position and behavior for levels with Joe (level 5 and 6)
+            if (level >= 4) {
+                joeX = random(50, windowWidth - 50);
+                joeY = random(50, windowHeight - 50);
+            }
+
+            // Display the level's text
+            document.getElementById('levelText').innerText = texts[level];
+            document.getElementById('dialog').innerText = "";
+
+            // Don't start audio until user interaction
+            // Stop current audio and play new level's audio if audio has started
+            if (audioStarted && currentAudio && currentAudio.isPlaying()) {
+                currentAudio.stop();  // Stop the previous audio
+            }
+            if (audioStarted) {
+                currentAudio = levelAudio[level];
+                if (currentAudio) {
+                    currentAudio.loop();  // Play new audio for the current level
+                }
+            }
+        }
+        
+        function nextLevel() {
+            if (level < backgrounds.length - 1) {
+                level++;
+                displayLevel();
+            } else {
+                endTime = millis();
+                let timeTaken = ((endTime - startTime) / 1000).toFixed(2);  // Calculate time in seconds
+                document.getElementById('levelText').innerText = "The adventure is complete! You made it home with Joe in " + timeTaken + " seconds.";
+                document.getElementById('levelText').classList.add('complete');
+
+                noLoop();  // Stop the game loop
+                if (currentAudio && currentAudio.isPlaying()) {
+                    currentAudio.stop();  // Stop audio at the end
+                }
+            }
+        }
+
+        function generateTriggerPoints() {
+            // Generate 5 random trigger points on the map
+            triggerPoints = [];
+            for (let i = 0; i < 5; i++) {
+                let point = {
+                    x: random(50, windowWidth - 50),
+                    y: random(50, windowHeight - 50),
+                    triggered: false,
+                    dialog: triggers[level][i%triggers[level].length],
+                    timeStamp: millis()  // Record the time when this paw print was generated
+                };
+                triggerPoints.push(point);
+            }
+        }
+
+        function movePawPrints() {
+            // Move untriggered paw prints to new locations after a set time
+            for (let point of triggerPoints) {
+                if (!point.triggered && millis() - point.timeStamp > pawPrintTimer) {
+                    // Update position and reset timestamp
+                    point.x = random(50, windowWidth - 50);
+                    point.y = random(50, windowHeight - 50);
+                    point.timeStamp = millis();  // Reset timestamp
+                }
+            }
+        }
+
+        function checkTriggers() {
+            let triggeredCount = 0;
+            for (let point of triggerPoints) {
+                if (!point.triggered && dist(characterX, characterY, point.x, point.y) < 80) {
+                    point.triggered = true;
+                    triggerDialog = point.dialog;
+                    document.getElementById('dialog').innerText = triggerDialog;
+                }
+
+                if (point.triggered) {
+                    triggeredCount++;
+                }
+            }
+
+            if (triggeredCount >= triggerPoints.length && !levelComplete) {
+                levelComplete = true;
+                setTimeout(nextLevel, 2000);
+            }
+        }
+
+        function moveJoe() {
+            joeX += random(-2, 2);
+            joeY += random(-2, 2);
+            joeX = constrain(joeX, 50, windowWidth - 50);
+            joeY = constrain(joeY, 50, windowHeight - 50);
+        }
+
+        function playAudioOnFirstKeyPress() {
+            if (!audioStarted) {
+                currentAudio = levelAudio[level];
+                if (currentAudio) {
+                    currentAudio.loop();  // Start playing the audio when first key is pressed
+                }
+                audioStarted = true;  // Set flag to true to prevent future triggers
+            }
+        }
+
+        function keyPressed() {
+            playAudioOnFirstKeyPress();  // Start audio on first keypress
+        }
+
+        function draw() {
+            background(backgrounds[level]);
+            image(character, characterX, characterY, 80, 80);
+
+            if (level >= 4) { // Only on hot spring and Beijing levels
+                moveJoe();
+                image(joe, joeX, joeY, 90, 90);
+            }
+
+            // Move character with arrow keys
+            if (keyIsDown(LEFT_ARROW)) characterX -= 5;
+            if (keyIsDown(RIGHT_ARROW)) characterX += 5;
+            if (keyIsDown(UP_ARROW)) characterY -= 5;
+            if (keyIsDown(DOWN_ARROW)) characterY += 5;
+
+            for (let point of triggerPoints) {
+                if (!point.triggered) {
+                    image(pawPrint, point.x - 30, point.y - 30, 60, 60); // Larger paw print for trigger points
+                }
+            }
+
+            checkTriggers();
+        }
+    </script>
+</body>
+</html>

@@ -10,7 +10,30 @@
   
 body {
     font-family: satoshi;
-    color: black;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: white;
+        color: black;
+    }
+    .container {
+        border: solid 2px black;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    .container {
+        border: solid 2px #e0e0e0;
+    }
+    a {
+        color: #ff69b4; /* Pink/purple color for links in dark mode */
+    }
 }
 
 .embedded {
@@ -26,7 +49,6 @@ body {
 .container{
     margin: 40px;
     padding:40px;
-    border: solid 2px black;
 }
 </style>
 <body>

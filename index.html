@@ -1,6 +1,8 @@
 <html>
 <head>
 <title>Isaac Joseph Clarke</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <style>
 @font-face {
@@ -11,6 +13,8 @@
 body {
     font-family: satoshi;
     transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding: 0;
 }
 
 @media (prefers-color-scheme: light) {
@@ -20,6 +24,12 @@ body {
     }
     .container {
         border: solid 2px black;
+    }
+    a {
+        color: #0066cc;
+    }
+    a:hover {
+        color: #004499;
     }
 }
 
@@ -32,7 +42,10 @@ body {
         border: solid 2px #e0e0e0;
     }
     a {
-        color: #ff69b4; /* Pink/purple color for links in dark mode */
+        color: #ff69b4;
+    }
+    a:hover {
+        color: #ff8cc8;
     }
 }
 
@@ -46,42 +59,123 @@ body {
     left: 0;
     z-index: -1;
 }
-.container{
-    margin: 40px;
-    padding:40px;
+
+.container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2.5rem 2rem;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: 0.02em;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid;
+    margin: 1.5rem 0;
+    opacity: 0.3;
+}
+
+p {
+    margin: 0 0 1.2rem 0;
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+.work-section {
+    margin: 2rem 0;
+}
+
+.work-image {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    margin: 1.5rem 0;
+    display: block;
+}
+
+.work-title {
+    font-style: italic;
+    margin: 0.5rem 0 0.3rem 0;
+    display: block;
+}
+
+.work-description {
+    margin: 0 0 1.5rem 0;
+    display: block;
+}
+
+.links-section {
+    margin: 1.5rem 0;
+}
+
+.links-section small {
+    line-height: 1.6;
+}
+
+.links-section a {
+    text-decoration: none;
+}
+
+.links-section a:hover {
+    text-decoration: underline;
+}
+
+.contact {
+    margin: 1.5rem 0 0 0;
+}
+
+@media (max-width: 700px) {
+    .container {
+        margin: 1.5rem auto;
+        padding: 1.5rem 1.25rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    .work-image {
+        max-width: 100%;
+    }
 }
 </style>
 <body>
 <div class="container">
-<b>Welcome to my website</b>
+<h1>Isaac Clarke</h1>
 <hr>
-I am currently a PhD candidate in Computational Media and Arts at The Hong Kong University of Science and Technology (Guangzhou).<br>
-I will be defending my thesis in Summer 2026.<br>
-<br>
-My interests are in contemporary art, alien intelligences, and artists making their own tools.
-<br>
-<br>
-Recent work can be found on my <a href="https://github.com/isaac-art">github</a> 
-<br><br>
-<img src="j0.jpg" alt="j0" style="width: 500px; height: auto;" > <br>
-<small><i>Tom Petty's Quantum AI Alignment Jacket, 2025</i></small>
-<br>
-<small>An embroidered jacket with embedded BLE micro-contollers that I use to steer control <br> vectors of language models and control audio playback. Based on the suit Tom Petty <br> wore at Live Aid 1985.</small>
-<br><br>
-Some recent works are <a href="https://chat.thanks.fish/">BackChat</a> and <a href="https://dl.acm.org/toc/pacmcgit/2025/8/3">A Speculativ AI Reenactment of the Figurists' Encounters with the I Ching</a>
-<br><br>
-Previously I was involved in :  
+
+<p>I am currently a PhD candidate in Computational Media and Arts at The Hong Kong University of Science and Technology (Guangzhou). I will be defending my thesis in Summer 2026.</p>
+
+<p>My interests are in contemporary art, alien intelligences, and artists making their own tools.</p>
+
+<p>Recent work can be found on my <a href="https://github.com/isaac-art">github</a>.</p>
+
+<div class="work-section">
+<img src="j0.jpg" alt="j0" class="work-image">
+<small class="work-title">Tom Petty's Quantum AI Alignment Jacket, 2025</small>
+<small class="work-description">An embroidered jacket with embedded BLE micro-contollers that I use to steer control vectors of language models and control audio playback. Based on the suit Tom Petty wore at Live Aid 1985.</small>
+</div>
+
+<p><small>Some other recent works are <a href="https://chat.thanks.fish/">BackChat</a> and <a href="https://dl.acm.org/toc/pacmcgit/2025/8/3">A Speculative AI Reenactment of the Figurists' Encounters with the I Ching</a></small></p>
+
+<div class="links-section">
+<small>
+Previously I was involved in:  
 <a href="http://theinstituteofjamaisvu.com/">The Institute of Jamais Vu, London</a> | 
 <a href="https://serfleeds.co.uk/">Serf, Leeds</a> |
 <a href="https://nlcao.com/">NL'CAO, New Mexico</a> |
-<a href="http://blackshuck.co/">Black Shuck co-operative</a> 
-<br><br>
-<!-- <br>
-<br> here is some music made with
-<a href="https://shireenscreams.bandcamp.com/">shireen screams </a> -->
-<!-- <br><br>
-here is a pdf with images of past work: <a href="isaac_1.pdf" >PDF (25 MB)</a>  -->
-If you'd like to contact me, please use my email <b>isaac@isaacclarke.com</b>, or open an issue on one of my repos.
+<a href="http://blackshuck.co/">Black Shuck co-operative</a>
+</small>
+</div>
+
+<p class="contact"><small>If you'd like to contact me, please use my email <b>isaac@isaacclarke.com</b>, or open an issue on one of my repos.</small></p>
+
 <hr>
 </div>
 </body>
